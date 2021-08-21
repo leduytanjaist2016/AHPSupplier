@@ -90,11 +90,7 @@
   /**
    * Mobile nav toggle
    */
-  on('click', '.mobile-nav-toggle', function(e) {
-    select('body').classList.toggle('mobile-nav-active')
-    this.classList.toggle('bi-list')
-    this.classList.toggle('bi-x')
-  })
+
 
   /**
    * Scrool with ofset on links with a class name .scrollto
@@ -253,4 +249,27 @@
     })
   });
 
+
+
 })()
+ /**
+   * Add by Tan
+   */
+    function Add_Attribute(){
+      var no_attibute = document.getElementById('no_attribute').value;
+      var i = 1;
+      document.getElementById("attribute-list").innerHTML +=
+          "<form id = 'attribute-list-form'> "
+
+ while (i <= no_attibute)
+      {
+            document.getElementById("attribute-list").innerHTML +=
+              "<label for=\"fname\"> Attribute " + i.toString() + "</label>\n" +
+                "  <input type=\"text\" id= " +
+                "\"attribute-list-"+ i.toString() +
+                "\"name=\"fname\" ><br>";
+            i++;
+      }
+      document.getElementById("attribute-list").innerHTML += "<input type='button' value='Submit'> </form>";
+
+    }
