@@ -256,20 +256,245 @@
    * Add by Tan
    */
     function Add_Attribute(){
+      document.getElementById("button_no_attribute").disabled = 'true';
       var no_attibute = document.getElementById('no_attribute').value;
-      var i = 1;
+      var i = 0;
       document.getElementById("attribute-list").innerHTML +=
-          "<form id = 'attribute-list-form'> "
+          "<form id = 'attribute-list-form'> ";
+       while (i < no_attibute)
+            {
+                  document.getElementById("attribute-list").innerHTML +=
+                    "<label for=\"fname\"> Attribute " + (i+1).toString()+ " " + "</label>\n" +
+                      "  <input type=\"text\" id= " +
+                      "\"attribute-list-"+ i.toString() +
+                      "\"name=\"fname\" ><br>";
+                  i++;
+            }
+            document.getElementById("attribute-list").innerHTML += "<input type='button' value='Submit' onclick='Add_Attribute_Score()'> </form>";
 
- while (i <= no_attibute)
-      {
-            document.getElementById("attribute-list").innerHTML +=
-              "<label for=\"fname\"> Attribute " + i.toString() + "</label>\n" +
-                "  <input type=\"text\" id= " +
-                "\"attribute-list-"+ i.toString() +
-                "\"name=\"fname\" ><br>";
-            i++;
+          };
+
+    function print_form(attribute_list, table_id)
+          {
+            var tableString = "<table id='"+table_id+"'>";
+            for(let i = 0; i <= attribute_list.length; i++) {
+              tableString += "<tr>";
+              for (let j = 0; j <= attribute_list.length; j++)
+              {
+                if(i==0 && j == 0){
+                  console.log("i 0 j0");
+                  tableString +=
+                       "<th > Attribute </th>";
+                }
+                else if(i!==0 && j==0){
+                  console.log("i 0 j1");
+                 tableString +=
+                      "<th> " + attribute_list[i-1] + "</th>";
+                } else if(i==0 && j!==0){
+                  console.log("i!=0 j!=0");
+                  tableString +=
+                      "<th>" + attribute_list[j-1]+  "</th>";
+                } else
+                {
+                  input_id = table_id + "_"+(i-1).toString()+"_"+ (j-1).toString();
+                  tableString +=
+                      "<td> " +
+                      "<input type=\"number\" onkeyup=\"Input_Maxtrix_Value(this.id)\" id= " + input_id +"\>" +
+                      "</td> ";
+                }
+
+              }
+              tableString += "</tr>";
+
+            }
+            tableString += "</table>";
+            document.getElementById("attribute-score").innerHTML += tableString;
+          };
+    function Add_Attribute_Score()
+    {
+      var attribute_list_array =[];
+      for (let i = 0; i<document.getElementById('no_attribute').value; i++) {
+        attribute_list_array.push(document.getElementById('attribute-list-'+i.toString()).value);
       }
-      document.getElementById("attribute-list").innerHTML += "<input type='button' value='Submit'> </form>";
+      console.log(attribute_list_array[0]);
+      console.log(attribute_list_array[1]);
+      //print_form(attribute_list_array);
+      print_form(attribute_list_array, "Add_Attribute_Score_Table");
+      tableString ="";
+      tableString += "<input type='button' value='Submit'"+
+                "onclick = \"Cal_Priority_Vector()\"" +
+          "data_size = \"no_attribute\" data_id = \"Add_Attribute_Score_Table\" output_id = \"priority-vector_of_attribute\"" +
+          ">";
+      document.getElementById("attribute-score").innerHTML += tableString;
+      upper_matrix(attribute_list_array.length, "Add_Attribute_Score_Table");
+    };
+    // Method to form upper
+    // triangular matrix
+    function upper_matrix(size, input_id)
+    {
+      console.log(size);
+        let i, j;
+        for (i = 0; i < size; i++)
+        {
+            for (j = 0; j < size; j++)
+            {
+              use_id = input_id + "_"+(i).toString()+"_"+ (j).toString();
+                if (i > j)
+                {
+                  document.getElementById(use_id).disabled = true;
+                }
+                else if (i==j) {
+                  document.getElementById(use_id).value = 1;
+                  document.getElementById(use_id).disabled = true;
+                }
+            }
+        }
+    };
+    function Input_Maxtrix_Value(id)
+    {
+      console.log(id);
+      //var value = document.getElementById(id).value;
+      id_array = id.split("_");
+      var id_new = "";
+      for(i = 0; i< id_array.length-2; i++)
+      {
+        id_new += id_array[i] + "_";
+      }
+      id_new += id_array[id_array.length-1]+"_"+ id_array[id_array.length-2];
+      if(document.getElementById(id).value>0)
+        document.getElementById(id_new).value = (1/document.getElementById(id).value).toFixed(4);
+    };
 
-    }
+
+
+    // To creat javascript matrix
+  function Get_Matrix_Values(size, id)
+    {
+      var this_array = Create2DArray(size);
+      for (var j = 0; j < size; j++) {
+          for (var i = 0; i < size; i++) {
+              this_array[i][j] = Number(document.getElementById(id + "_"+(j).toString()+"_"+ (i).toString()).value);
+          }
+      }
+      return this_array;
+    };
+    function Cal_Priority_Vector()
+    {
+      let data_size = event.target.getAttribute('data_size');
+      let id = event.target.getAttribute('data_id');
+      let output_id = event.target.getAttribute('output_id');
+      let size = document.getElementById(data_size).value;
+      let this_array = Get_Matrix_Values(size, id);
+      var normalized_array = Create2DArray(size);
+       for (var i = 0; i < size; i++) {
+         for (var j = 0; j < size; j++) {
+           normalized_array[j][i] = Number((this_array[i][j]/ this_array[i].reduce((v, k) => (v + k))).toFixed(2));
+         }
+       }
+       console.table(normalized_array);
+      //document.getElementById(id).innerHTML += myString;
+      var priority_vector = [];
+      for (var i = 0; i < size; i++) {
+        priority_vector.push(Number((normalized_array[i].reduce((v, k) => (v + k))/size).toFixed(2)));
+      }
+      //console.table(this_array);
+      //console.table(priority_vector);
+      //console.table(multiplyMatrices(this_array,priority_vector));
+      Ax = multiplyMatrices(this_array,priority_vector);
+      var sum_Axx = 0;
+      for (var i = 0; i< size; i++)
+      {
+        sum_Axx += Ax[i]/priority_vector[i];
+      }
+      lamda = Number((sum_Axx/size).toFixed(2));
+      //lamda = (multiplyMatrices(this_array,priority_vector).reduce((v, k) => (v + k))/size;
+
+      consistency_index = Number(((lamda - size)/(size-1)).toFixed(2));
+      console.log(lamda);
+      console.log(consistency_index);
+      consistency_ratio = Number((consistency_index/random_index(size)).toFixed(2));
+      tableString = "<p> Priority Vector: " + priority_vector.toString() + " </p>";
+      tableString += "<p> Lamda: " + lamda.toString() + " </p>";
+      tableString += "<p> Consistency Index: " + consistency_index.toString() + " </p>";
+      tableString += "<p> Consistency Ratio: " + consistency_ratio.toString() + " </p>";
+      if (size < 3)
+      {
+        tableString += "<p> The evaluations are consistent since size < 3 </p>";
+      } else if(consistency_ratio<=0.1)
+        tableString += "<p> The evaluations are consistent </p>";
+      else
+        tableString += "<p> The evaluations are not consistent </p>";
+      document.getElementById(output_id).innerHTML += tableString;
+
+      return consistency_index;
+    };
+    function Create2DArray(rows) {
+              var arr = [];
+
+              for (var i=0;i<rows;i++) {
+                 arr[i] = [];
+              }
+
+              return arr;
+            };
+    //multiply Matrices
+      function multiplyMatrices(input1, input2) {
+          var result = [];
+          for (var j = 0; j < input1.length; j++) {
+            var sum = 0;
+              for (var i = 0; i < input1.length; i++) {
+                  console.log(input1[i][j].toString()+" + "+input2[i].toString());
+                  sum += input1[i][j] * input2[i];
+                  }
+                  result.push(Number(sum.toFixed(2)));
+              }
+          return result;
+      };
+      function random_index(size)
+      {
+        switch(Number(size)) {
+          case 3:
+          r_index = 0.58;
+          break;
+          case 4:
+          r_index = 0.90;
+          break;
+          case 5:
+          r_index = 1.12;
+          break;
+          case 6:
+          r_index = 1.24;
+          break;
+          case 7:
+          r_index = 1.32;
+          break;
+          case 8:
+          r_index = 1.41;
+          break;
+          case 9:
+          r_index = 1.45;
+          break;
+          case 10:
+          r_index = 1.49;
+          break;
+          case 11:
+          r_index = 1.51;
+          break;
+          case 12:
+          r_index = 1.48;
+          break;
+          case 13:
+          r_index = 1.56;
+          break;
+          case 14:
+          r_index = 1.57;
+          break;
+          case 15:
+          r_index = 1.59;
+          break;
+        default:
+          r_index = 1;
+}
+return r_index;
+
+      }
