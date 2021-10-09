@@ -258,7 +258,10 @@
     function Add_Attribute(){
       document.getElementById("button_no_attribute").disabled = 'true';
       var no_attibute = document.getElementById('no_attribute').value;
+      var no_supplier = document.getElementById('no_supplier').value;
+
       var i = 0;
+      var j = 0;
       document.getElementById("attribute-list").innerHTML +=
           "<form id = 'attribute-list-form'> ";
        while (i < no_attibute)
@@ -270,11 +273,27 @@
                       "\"name=\"fname\" ><br>";
                   i++;
             }
-            document.getElementById("attribute-list").innerHTML += "<input type='button' value='Submit' onclick='Add_Attribute_Score()'> </form>";
+            //document.getElementById("attribute-list").innerHTML += "<input type='button' value='Submit' onclick='Add_Attribute_Score()'> </form>";
+
+       document.getElementById("supplier-list").innerHTML +=
+          "<br><form id = 'supplier-list-form'> ";
+       while (j < no_supplier)
+            {
+                  document.getElementById("supplier-list").innerHTML +=
+                    "<label for=\"fname\"> Supplier " + (j+1).toString()+ " " + "</label>\n" +
+                      "  <input type=\"text\" id= " +
+                      "\"supplier-list-"+ j.toString() +
+                      "\"name=\"fname\" ><br>";
+                  j++;
+            }
+            document.getElementById("supplier-list").innerHTML += "<br><input type='button' value='Submit' class='button-74' onclick='Add_Attribute_Score()'" +
+                "data_size = \"no_attribute\" data_id = \"Add_Attribute_Score_Table\" output_id = \"priority-vector_of_attribute\"" +
+                "> </form><br> ";
+
 
           };
 
-    function print_form(attribute_list, table_id)
+    function print_form(attribute_list, table_id, div_id, title)
           {
             var tableString = "<table id='"+table_id+"'>";
             for(let i = 0; i <= attribute_list.length; i++) {
@@ -282,16 +301,15 @@
               for (let j = 0; j <= attribute_list.length; j++)
               {
                 if(i==0 && j == 0){
-                  console.log("i 0 j0");
-                  tableString +=
-                       "<th > Attribute </th>";
+
+                  tableString += "<th >" + title+  "</th>";
                 }
                 else if(i!==0 && j==0){
-                  console.log("i 0 j1");
+
                  tableString +=
                       "<th> " + attribute_list[i-1] + "</th>";
                 } else if(i==0 && j!==0){
-                  console.log("i!=0 j!=0");
+
                   tableString +=
                       "<th>" + attribute_list[j-1]+  "</th>";
                 } else
@@ -308,7 +326,7 @@
 
             }
             tableString += "</table>";
-            document.getElementById("attribute-score").innerHTML += tableString;
+            document.getElementById(div_id).innerHTML += tableString;
           };
     function Add_Attribute_Score()
     {
@@ -316,12 +334,10 @@
       for (let i = 0; i<document.getElementById('no_attribute').value; i++) {
         attribute_list_array.push(document.getElementById('attribute-list-'+i.toString()).value);
       }
-      console.log(attribute_list_array[0]);
-      console.log(attribute_list_array[1]);
-      //print_form(attribute_list_array);
-      print_form(attribute_list_array, "Add_Attribute_Score_Table");
+
+      print_form(attribute_list_array, "Add_Attribute_Score_Table", "attribute-score", "Attribute");
       tableString ="";
-      tableString += "<input type='button' value='Submit'"+
+      tableString += "<input type='button' class='button-74' value='Submit'"+
                 "onclick = \"Cal_Priority_Vector()\"" +
           "data_size = \"no_attribute\" data_id = \"Add_Attribute_Score_Table\" output_id = \"priority-vector_of_attribute\"" +
           ">";
@@ -332,7 +348,7 @@
     // triangular matrix
     function upper_matrix(size, input_id)
     {
-      console.log(size);
+
         let i, j;
         for (i = 0; i < size; i++)
         {
@@ -344,15 +360,19 @@
                   document.getElementById(use_id).disabled = true;
                 }
                 else if (i==j) {
+                  console.log("i==j");
+                  console.log(use_id);
                   document.getElementById(use_id).value = 1;
-                  document.getElementById(use_id).disabled = true;
+                  //document.getElementById(use_id).disabled = true;
                 }
             }
         }
+        i = 0;
+        j = 0;
     };
     function Input_Maxtrix_Value(id)
     {
-      console.log(id);
+
       //var value = document.getElementById(id).value;
       id_array = id.split("_");
       var id_new = "";
@@ -391,15 +411,15 @@
            normalized_array[j][i] = Number((this_array[i][j]/ this_array[i].reduce((v, k) => (v + k))).toFixed(2));
          }
        }
-       console.table(normalized_array);
-      //document.getElementById(id).innerHTML += myString;
+
       var priority_vector = [];
       for (var i = 0; i < size; i++) {
         priority_vector.push(Number((normalized_array[i].reduce((v, k) => (v + k))/size).toFixed(2)));
       }
-      //console.table(this_array);
-      //console.table(priority_vector);
-      //console.table(multiplyMatrices(this_array,priority_vector));
+      console.log("This Array");
+      console.log(this_array);
+      console.log("Prio");
+      console.log(priority_vector);
       Ax = multiplyMatrices(this_array,priority_vector);
       var sum_Axx = 0;
       for (var i = 0; i< size; i++)
@@ -410,23 +430,26 @@
       //lamda = (multiplyMatrices(this_array,priority_vector).reduce((v, k) => (v + k))/size;
 
       consistency_index = Number(((lamda - size)/(size-1)).toFixed(2));
-      console.log(lamda);
-      console.log(consistency_index);
       consistency_ratio = Number((consistency_index/random_index(size)).toFixed(2));
-      tableString = "<p> Priority Vector: " + priority_vector.toString() + " </p>";
+      tableString = "<p> <br> Priority Vector: " + priority_vector.toString().split(",").join(", ") + " </p>";
       tableString += "<p> Lamda: " + lamda.toString() + " </p>";
       tableString += "<p> Consistency Index: " + consistency_index.toString() + " </p>";
       tableString += "<p> Consistency Ratio: " + consistency_ratio.toString() + " </p>";
       if (size < 3)
       {
         tableString += "<p> The evaluations are consistent since size < 3 </p>";
-      } else if(consistency_ratio<=0.1)
+        document.getElementById("alternative-tables").style.display = 'inline';
+        document.getElementById("id_result").innerHTML += priority_vector.toString()+";";
+      } else if(consistency_ratio<=0.1) {
         tableString += "<p> The evaluations are consistent </p>";
+        document.getElementById("alternative-tables").style.display = 'inline';
+        document.getElementById("id_result").innerHTML += priority_vector.toString()+";";
+      }
       else
         tableString += "<p> The evaluations are not consistent </p>";
       document.getElementById(output_id).innerHTML += tableString;
 
-      return consistency_index;
+      return priority_vector;
     };
     function Create2DArray(rows) {
               var arr = [];
@@ -443,7 +466,6 @@
           for (var j = 0; j < input1.length; j++) {
             var sum = 0;
               for (var i = 0; i < input1.length; i++) {
-                  console.log(input1[i][j].toString()+" + "+input2[i].toString());
                   sum += input1[i][j] * input2[i];
                   }
                   result.push(Number(sum.toFixed(2)));
@@ -497,4 +519,113 @@
 }
 return r_index;
 
+      };
+      function CreateAlternativeTable(){
+      };
+
+      // To generate Supplier Tables
+      function Add_Supplier_Score(attribute_list)
+    {
+      var table_id = attribute_list.toString().split(' ').join('_') + "_Add_Supplier_Score_Table";
+      var supplier_list_array =[];
+      for (let i = 0; i<document.getElementById('no_supplier').value; i++) {
+        var myid = 'supplier-list-'+i.toString();
+        supplier_list_array.push(document.getElementById(myid).value);
       }
+      //print_form(attribute_list_array);
+      print_form(supplier_list_array, table_id, "supplier_div", attribute_list);
+      tableString ="";
+      tableString += "<input type='button' class='button-74' value='Submit'"+
+                "onclick = \"Cal_Priority_Vector()\"" +
+          "data_size = \"no_supplier\" data_id = \""+ table_id +"\" output_id = \"" + "div_" + table_id +"\"" +
+          ">";
+      tableString += "<div id=\"div_" + table_id +"\"></div>";
+      document.getElementById("supplier_div").innerHTML += tableString;
+      upper_matrix(supplier_list_array.length, table_id);
+    };
+
+       function Add_Supplier_Form(){
+          for (let i = 0; i<document.getElementById('no_attribute').value; i++) {
+            var myid = "attribute-list-"+i.toString();
+            Add_Supplier_Score(document.getElementById(myid).value);
+      }
+          document.getElementById("btn_result").style.display = 'inline';
+
+       };
+       function Cal_Final_Result()
+       {
+         var ranking_of_alternatives = document.getElementById('id_result').innerHTML.split(";");
+         var size = document.getElementById("no_supplier").value;
+         let priority_matrix = []; // Priority Matrix
+         let criteria_weights_temp = []; // Criteria Weights
+         let criteria_weights = [];
+         let winner_matrix = [];
+         for (let i = 0; i < ranking_of_alternatives.length-1; i++)
+         {
+           if(i==0)
+             criteria_weights_temp = (ranking_of_alternatives[i].split(",")).map(Number);
+           else
+           {
+             console.log(ranking_of_alternatives[i].split(","));
+             priority_matrix.push((ranking_of_alternatives[i].split(",")).map(Number));
+           }
+         }
+         for (let i = 0; i<criteria_weights_temp.length; i++)
+           criteria_weights.push(criteria_weights_temp[i]);
+         //var transpose_array = Transpose(priority_matrix);
+         console.log("criteria_weights");
+         console.log(criteria_weights);
+         console.log("priority_matrix");
+         console.log(priority_matrix);
+         winner_matrix.push(multiplyMatrices_final_array(priority_matrix, criteria_weights));
+         console.log("Winner");
+         console.log(winner_matrix);
+         var winner_value = winner_matrix[indexOfMax(winner_matrix)];
+         console.log("winner_value");
+         console.log (winner_value);
+         var winner_supplier_id = "supplier-list-" + indexOfMax(winner_matrix);
+         var winner_supplier =  document.getElementById(winner_supplier_id).value;
+         console.log("winner_supplier");
+         console.log (winner_supplier);
+         document.getElementById("final_result").innerHTML += "Winner Array: " + winner_matrix.toString().split(",").join(", ") + "<br>";
+         document.getElementById("final_result").innerHTML += "Max Winner Array Index: " + (indexOfMax(winner_matrix)).toString() +"<br>";
+         document.getElementById("final_result").innerHTML += "The Winner is: " + winner_supplier.toString() +"<br>";
+       };
+
+       // Transpose Array
+       function Transpose(array) {
+              return Object.keys(array[0]).map(function(c) {
+          return array.map(function(r) { return r[c]; });
+       });
+        }
+        // Return index of Max
+function indexOfMax(arr) {
+    if (arr.length === 0) {
+        return -1;
+    }
+
+    var max = arr[0];
+    var maxIndex = 0;
+
+    for (var i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            maxIndex = i;
+            max = arr[i];
+        }
+    }
+
+    return maxIndex;
+};
+             function multiplyMatrices_final_array(input1, input2) {
+          var result = [];
+          for (var j = 0; j < input1[0].length; j++) {
+            var sum = 0;
+              for (var i = 0; i < input1.length; i++) {
+                  sum += input1[i][j] * input2[i];
+                  }
+                  result.push(Number(sum.toFixed(2)));
+              }
+          return result;
+      };
+
+

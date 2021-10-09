@@ -133,22 +133,47 @@
           <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
         </div>
 
-<div class="col-lg-7 mt-3 mt-lg-0 d-flex align-items-stretch" id="no_attribute_class">
+<div class="col-lg-7 mt-3 mt-lg-0 d-flex align-items-stretch form-group" id="no_attribute_class">
         <form action="" class ="php-email-form" id = "form_no_attribute">
-          <label for="number">Number of attribute:</label>
-          <input type="number" class = "form-group col-md-5" id="no_attribute" name="no_attribute"> <br>
-          <input type="button" id="button_no_attribute" onclick="Add_Attribute()" value="Submit">
+          <label for="number">Number of attributes: &nbsp</label>
+          <input type="number" class = "form-group col-md-5" id="no_attribute" name="no_attribute"> <br>  <br>
+           <label for="number">Number of suppliers: &nbsp </label>
+          <input type="number" class = "form-group col-md-5" id="no_supplier" name="no_supplier"> <br><br>
+          <input type="button" class ="button-74" id="button_no_attribute" onclick="Add_Attribute()" value="Submit">
         </form>
         <br>
-        <div id="attribute-list">
+</div>
+
+        <div id="attribute-list"> </div>
+
+        <div id="supplier-list">
         </div>
 
 
-</div>
+
+
         <div id="attribute-score">
         </div>
         <div id="priority-vector_of_attribute">
         </div>
+        <div id="alternative-tables" style="display: none;">
+          <input type='button' value='Continue' onclick='Add_Supplier_Form()' data_size = "no_attribute" data_id = "Add_Attribute_Score_Table" output_id = "priority-vector_of_attribute">
+        </div>
+        <div id="supplier_div">
+        </div>
+
+        <div id = "id_result" style="display: none">
+          </div>
+        <div id="btn_result" style="display: none">
+          <input type='button' value='Final Result' onclick='Cal_Final_Result()'>
+        </div>
+        <div id="final_result">
+
+        </div>
+
+
+
+</div>
 
 
 
