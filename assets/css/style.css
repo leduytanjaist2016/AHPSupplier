@@ -1247,3 +1247,8 @@ section {
 div {
   padding-top: 5px;
 }
+
+.beauty-class{
+  color: blue;
+  font-size: 14px;
+}
